@@ -2,12 +2,16 @@
   "name": "npm-packages-analyse",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
-  "type": "module",
+  "main": "dist/index.cjs.js",
+  "module": "dist/index.esm.js",
+  "brower": "dist/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "rollup --config --bundleConfigAsCjs"
   },
+  "files": [
+    "dist"
+  ],
   "keywords": [],
   "author": "",
   "license": "ISC",
