@@ -7,30 +7,34 @@ export default [
         output: [
             {
                 file: path.resolve(__dirname, './dist/index.esm.js'),
-                format:"es"
+                format:"es",
+                banner: '#!/usr/bin/env node',
             },
             {
                 file: path.resolve(__dirname, './dist/index.cjs.js'),
-                format:"cjs"
+                format:"cjs",
+                banner: '#!/usr/bin/env node',
             },
             {
                 file: path.resolve(__dirname, './dist/index.js'),
                 format:"umd",
-                name: "tracker"
+                name: "tracker",
+                banner: '#!/usr/bin/env node',
             }
         ],
         plugins:[
-            ts()
+            ts(),
         ]
     },
     {
         input: "./src/cron/index.ts",
         output: {
             file: path.resolve(__dirname, './dist/index.d.js'),
-            format:"es"
+            format:"es",
+            banner: '#!/usr/bin/env node',
         },
         plugins: [
-            dts()
+            dts(),
         ]
     }
 ]
