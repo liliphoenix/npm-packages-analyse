@@ -1,5 +1,8 @@
 #!/usr/bin/env node
 import { Command } from "commander";
+//引入遍历包函数
+import { getDependencies } from "./readDep"
+import process from "process";
 const program = new Command();
 
 program
@@ -24,9 +27,20 @@ program
     .option('-s, --json <fileName>', 'file name')
     .action((data, options) => {
         console.log("即将进行npm性能分析")
-        console.log("depth", data.depth)
-        console.log("json", data.json)
-        console.log("options", options)
+        //判断输入的是层数还是json地址
+        if(data.depth){
+            //传入要遍历的层数和当前cli的路径，这样就可以保证包下载到任何位置，但分析的起点始终在根package.json
+            const dependenciesList= getDependencies(data.depth,process.cwd())
+            console.log(dependenciesList);
+        }else if(data.depth<=0){
+            console.log("Please input a Integer");
+        }
+        //jsonFile
+        if(data.json){
+            //输出为json
+            console.log("json", data.json)
+        }
+        // console.log("options", options)
     });
 
 // 命令后面直接跟参数即可
