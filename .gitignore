@@ -1,3 +1,6 @@
 .idea/*
 dist/*
 node_modules/*
+packages/npm-packages-ui/.idea
+packages/npm-packages-ui/.vscode
+packages/npm-packages-ui/node_modules/*
