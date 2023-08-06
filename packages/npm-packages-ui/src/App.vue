@@ -1,24 +1,47 @@
+<template>
+<!--  <header>-->
+<!--    <img alt="Vue logo" class="logo" src="@/assets/logo.svg" width="125" height="125" />-->
+<!--    <div class="wrapper">-->
+<!--      <HelloWorld msg="You did it!" />-->
+
+<!--      <nav>-->
+<!--        <RouterLink to="/">Home</RouterLink>-->
+<!--        <RouterLink to="/about">About</RouterLink>-->
+<!--      </nav>-->
+<!--    </div>-->
+<!--  </header>-->
+    <div style="display: block">{{npmAnalyseRes}}</div>
+<!--  <RouterView />-->
+</template>
+
 <script setup lang="ts">
 import { RouterLink, RouterView } from 'vue-router'
 import HelloWorld from './components/HelloWorld.vue'
+import {onMounted, reactive, ref} from "vue";
+
+// const data = reactive({
+//     npmAnalyseRes: {}
+// })
+
+let npmAnalyseRes = ref({})
+
+onMounted(() =>{
+    getNpmAnalyseRes()
+})
+
+function getNpmAnalyseRes() {
+    fetch("/getNpmAnalyseRes")
+        .then(response => response.json())
+        .then(data => {
+            // 使用返回的数据
+            console.info("This is analyse res：",data.analyseRes)
+            if (data.analyseRes) {
+                npmAnalyseRes.value = data.analyseRes;
+            }
+        })
+}
+
 </script>
-
-<template>
-  <header>
-    <img alt="Vue logo" class="logo" src="@/assets/logo.svg" width="125" height="125" />
-
-    <div class="wrapper">
-      <HelloWorld msg="You did it!" />
-
-      <nav>
-        <RouterLink to="/">Home</RouterLink>
-        <RouterLink to="/about">About</RouterLink>
-      </nav>
-    </div>
-  </header>
-
-  <RouterView />
-</template>
 
 <style scoped>
 header {

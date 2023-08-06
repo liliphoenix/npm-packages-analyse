@@ -24,7 +24,8 @@
 
 #### 步骤
 ```
-  1. 使用build命令进行打包
+  1. 先把packages中的vue项目打包，每次调整都要重新打包，主要使用dist中的文件 
+  2. 使用build命令进行打包
   2. 使用link命令将一个本地的 npm 包链接到全局环境
   3. 即可测试命令
 ```
@@ -32,4 +33,5 @@
 #### 注意
 ```
 - package.json 中的name，要与bin中的key一致方可使用
+- package.json 中设置type: module，会导致打包后的commander在运行时候异常
 ```

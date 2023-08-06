@@ -44,6 +44,11 @@ program
             // 设置静态资源路径
             app.use(express.static(vueDistPath));
 
+            app.get("/getNpmAnalyseRes", (req, res) => {
+                const data = { analyseRes: "Hello from server!" };
+                res.json(data); // 返回 JSON 数据
+            });
+
             app.listen(port || 3000, () => {
                 const url = "http://localhost:" + port
                 console.log(`Server is running ${url}`);
