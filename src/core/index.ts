@@ -2,8 +2,6 @@
 import { Command } from "commander";
 import path from "path";
 import express from "express"
-import openBrowser from "../utils/openBrowser";
-const opn = require("opn")
 const program = new Command();
 
 program
