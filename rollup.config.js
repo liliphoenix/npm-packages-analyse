@@ -3,7 +3,7 @@ import ts from "rollup-plugin-typescript2"
 import {dts} from "rollup-plugin-dts";
 export default [
     {
-        input: "./src/cron/index.ts",
+        input: "./src/core/index.ts",
         output: [
             {
                 file: path.resolve(__dirname, './dist/index.esm.js'),
@@ -27,7 +27,7 @@ export default [
         ]
     },
     {
-        input: "./src/cron/index.ts",
+        input: "./src/core/index.ts",
         output: {
             file: path.resolve(__dirname, './dist/index.d.js'),
             format:"es",

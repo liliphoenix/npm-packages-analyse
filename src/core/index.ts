@@ -1,14 +1,18 @@
 #!/usr/bin/env node
 import { Command } from "commander";
-//引入遍历包函数
-import { getDependencies } from "./readDep"
-import process from "process";
+import path from "path";
+import express from "express";
+// import opn from "opn";
+
+const opn = require("opn")
 const program = new Command();
 
 program
     .name("npm-cli")
     .description('NPM CLI to some JavaScript string utilities')
     .option('-v, --version', 'output the version number')
+    .option('-n, --name', 'output the version number')
+    .option('-a, --analyze', 'output the version number')
     .version(`${require('../package').version}`)
     .usage('<command> [options]')
 
@@ -27,20 +31,30 @@ program
     .option('-s, --json <fileName>', 'file name')
     .action((data, options) => {
         console.log("即将进行npm性能分析")
-        //判断输入的是层数还是json地址
-        if(data.depth){
-            //传入要遍历的层数和当前cli的路径，这样就可以保证包下载到任何位置，但分析的起点始终在根package.json
-            const dependenciesList= getDependencies(data.depth,process.cwd())
-            console.log(dependenciesList);
-        }else if(data.depth<=0){
-            console.log("Please input a Integer");
-        }
-        //jsonFile
-        if(data.json){
-            //输出为json
-            console.log("json", data.json)
-        }
+        // console.log("depth", data.depth)
+        // console.log("json", data.json)
         // console.log("options", options)
+
+        if (!data.json){
+            // active vue project
+            const app = express();
+            const vuePath:string = "../packages/npm-packages-ui/dist"
+            const port = process.env.PORT || 3000
+            const vueDistPath = path.join(__dirname, vuePath);
+            // 设置静态资源路径
+            app.use(express.static(vueDistPath));
+
+            app.get("/getNpmAnalyseRes", (req, res) => {
+                const data = { analyseRes: "Hello from server!" };
+                res.json(data); // 返回 JSON 数据
+            });
+
+            app.listen(port || 3000, () => {
+                const url = "http://localhost:" + port
+                console.log(`Server is running ${url}`);
+                opn(url)
+            });
+        }
     });
 
 // 命令后面直接跟参数即可
