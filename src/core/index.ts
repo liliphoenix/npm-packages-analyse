@@ -1,7 +1,10 @@
 #!/usr/bin/env node
 import { Command } from "commander";
 import path from "path";
-import express from "express"
+import express from "express";
+// import opn from "opn";
+
+const opn = require("opn")
 const program = new Command();
 
 program
@@ -44,10 +47,8 @@ program
             app.listen(port || 3000, () => {
                 const url = "http://localhost:" + port
                 console.log(`Server is running ${url}`);
-                // openBrowser(url)
-                // opn(url)
+                opn(url)
             });
-            // exec('node server.js')
         }
     });
 
