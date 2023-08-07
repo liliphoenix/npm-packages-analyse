@@ -14,33 +14,39 @@ let dependenciesTree: Array<dependenciesType>
 program
     .name("npm-cli")
     .description(colors.bold.blue('🚀🚀🚀 NPM CLI to some JavaScript string utilities'))
+    .option('-n, --name', 'output the version name').action(()=>{
+        console.log(`${require('../package').name}`)
+    })
+    .option('-a, --analyze', 'display the dependencies tree in cmd').action(()=>{
+        console.log(getDependencies(6,process.cwd()));
+    })
     .version(`${require('../package').version}`)
-    .usage('<command> [options]')
-    .option('-n, --name', 'output the version name')
-    .option('analyze --depth <depth>', 'Output the specified number of levels of dependency tree.')
-    .option('analyze --json <filepath>', 'Specify the output path for the JSON file and output the dependency tree as a JSON file.')
+program.on("--help",function(){
+    console.log(` `);
+    console.log(colors.bold.blue('Examples:'));
+    console.log(`  analyze -d, --depth = <depth>  `);
+    console.log(`  analyze -json = <filepath>  `);
+    console.log(` `);
+}) 
 // 指令
 program.command('name')
-    .description('Display the package name')
+.description('display the package name')
     .action((str, options) => {
         console.log(`${require('../package').name}`)
     });
 program.command('version')
-    .description('Display package version')
+.description('display the package version')
     .action((str, options) => {
     console.log(`${require('../package').version}`)
 });
-
+program
 program
     .command('analyze')
-    .description('Display the dependency tree or output the dependency tree as a JSON file')
+    .description('display the package dependenciesTree')
     .option('-d, --depth <numbers>', 'Specify the depth')
     .option('-s, --json <fileName>', 'file name')
     .action((data, options) => {
         console.log(colors.bold.blue('⭐️⭐️ 即将进行npm性能分析... ⭐️⭐️'))
-        // console.log("depth", data.depth)
-        // console.log("json", data.json)
-        // console.log("options", options)
         // 限制层数的话就传入限制的层数
         if(data.depth){
             dependenciesTree = getDependencies(data.depth,process.cwd())
@@ -61,13 +67,12 @@ program
 
             app.listen(port || 3000, () => {
                 const url = "http://localhost:" + port
-                console.log(colors.green.bold(`🚀🚀 Server is running ${url}`));
+                console.log(`Server is running ${url}`);
                 opn(url)
             });
         }else{
-            const testJson={a:123}
 
-            
+            const testJson={a:123}
             let jsonFilePath =path.join(process.cwd(),data.json)    
             //相对路径
             const relativeReg = new RegExp('^[^/\]+(?:/[^/\]+)*.json$')
