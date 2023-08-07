@@ -20,7 +20,7 @@ const Actions = Object.freeze({
   SCRIPT: 2
 })
 
-function getBrowserEnv () {
+ function getBrowserEnv () {
   // Attempt to honor this environment variable.
   // It is specific to the operating system.
   // See https://github.com/sindresorhus/open#app for documentation.
@@ -36,7 +36,7 @@ function getBrowserEnv () {
   } else {
     action = Actions.BROWSER
   }
-  return { action, value }
+        return { action, value }
 }
 
 function executeNodeScript (scriptPath:string, url:string) {
