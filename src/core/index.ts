@@ -77,7 +77,7 @@ program
 
 			app.listen(port || 3000, () => {
 				const url = 'http://localhost:' + port;
-				console.log(`Server is running ${url}`);
+				console.log(colors.green(`✨ Server is running ${colors.bold(url)}`));
 				opn(url);
 			});
 		} else {
