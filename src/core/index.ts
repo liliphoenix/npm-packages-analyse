@@ -20,13 +20,12 @@ program
     .version(`${require('../package').version}`)
     .usage('<command> [options]');
 
-program.parse(process.argv);
+
 
 // 指令
 program.command('name')
     .action((str, options) => {
         console.log(`${require('../package').name}`)
-        console.log(program)
     });
 program.command('version')
     .action((str, options) => {
@@ -81,4 +80,4 @@ program
 //     .usage('<command> [options]')
 //
 
-
+program.parse(process.argv);
