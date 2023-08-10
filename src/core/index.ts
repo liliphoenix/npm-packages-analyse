@@ -3,6 +3,7 @@ import { Command } from "commander";
 import path from "path";
 import express from "express";
 import {log} from "util";
+import {getFullDepTree} from "./readDep/printDependencyGraph";
 // import opn from "opn";
 
 const opn = require("opn")
@@ -37,10 +38,13 @@ program
     .option('-s, --json <fileName>', 'File path')
     .action((data, options) => {
         console.log("即将进行npm性能分析")
-        // console.log("depth", data.depth)
-        // console.log("json", data.json)
-        // console.log("options", options)
-
+        // @ts-ignore
+        let dependenciesTree;
+        if (data.depth) {
+            dependenciesTree = getFullDepTree(process.cwd(), data.depth);
+        } else {
+            dependenciesTree = getFullDepTree(process.cwd());
+        }
         if (!data.json){
             // active vue project
             const app = express();
@@ -51,7 +55,8 @@ program
             app.use(express.static(vueDistPath));
 
             app.get("/getNpmAnalyseRes", (req, res) => {
-                const data = { analyseRes: "Hello from server!" };
+                // @ts-ignore
+                const data = { analyseRes: dependenciesTree };
                 res.json(data); // 返回 JSON 数据
             });
 
