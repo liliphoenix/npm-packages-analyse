@@ -1,6 +1,6 @@
 <template>
 <!--    <div style="display: block">{{npmAnalyseRes}}</div>-->
-    <div id="app">
+    <div>
       <drawRect :width="width" :height="100" :detailData="detailData" />
       <div>
 
@@ -26,14 +26,14 @@ const detailData = reactive<DetailData>({
     packageVersion: ""
 })
 
+dealWidth()
+
 onMounted(() =>{
     getNpmAnalyseRes()
-    dealWidth()
 })
 
 function dealWidth(){
     width.value = document.querySelector("#app")!.clientWidth;
-    console.log(width.value)
 }
 
 function getNpmAnalyseRes() {

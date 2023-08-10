@@ -33,7 +33,7 @@ import {ref} from "vue";
         const bgColor = detailData && detailData.bgColor? detailData.bgColor:"lightblue";
         const borderColor = detailData && detailData.borderColor? detailData.borderColor:"blue";
         const nameText = detailData && detailData.packageName? detailData.packageName:"PACKAGES";
-        const versionText = detailData && detailData.packageVersion? detailData.packageVersion:"v1.0.0";
+        const versionText = detailData && detailData.packageVersion? detailData.packageVersion: nameText==="PACKAGES"?null:"v1.0.0";
 
         const svg = d3.select(svgDom.value!)
             .attr("width", width)
@@ -49,14 +49,25 @@ import {ref} from "vue";
             .style("fill", bgColor)
             .style("stroke", borderColor);
 
-        svg.append("text")
-            .attr("x", width / 2)
-            .attr("y", height / 2 - 5)
-            .attr("text-anchor", "middle")
-            .attr("font-size", "18px")
-            .attr("dominant-baseline", "middle")
-            .style("fill", "black")
-            .text(nameText);
+        if(!versionText){
+            svg.append("text")
+                .attr("x", width / 2)
+                .attr("y", height / 2 + 2)
+                .attr("text-anchor", "middle")
+                .attr("font-size", "18px")
+                .attr("dominant-baseline", "middle")
+                .style("fill", "black")
+                .text(nameText);
+        }else {
+            svg.append("text")
+                .attr("x", width / 2)
+                .attr("y", height / 2 - 10)
+                .attr("text-anchor", "middle")
+                .attr("font-size", "18px")
+                .attr("dominant-baseline", "middle")
+                .style("fill", "black")
+                .text(nameText);
+        }
 
         svg.append("text")
             .attr("x", width / 2)
