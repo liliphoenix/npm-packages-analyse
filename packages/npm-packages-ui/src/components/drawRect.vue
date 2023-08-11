@@ -1,5 +1,5 @@
 <template>
-    <div class="rectangle-container">
+    <div class="rectangle-container" style="background-color: detailData">
         <svg ref="svgDom"></svg>
     </div>
 </template>
@@ -28,12 +28,12 @@ import {ref} from "vue";
      * * */
     function drawRectangle(width: number, height: number, detailData: DetailData) {
         width = !width? 200:width;
-        height = !height? 100:height;
+        height = !height? 60:height;
         const radius = 10;
         const bgColor = detailData && detailData.bgColor? detailData.bgColor:"lightblue";
         const borderColor = detailData && detailData.borderColor? detailData.borderColor:"blue";
         const nameText = detailData && detailData.packageName? detailData.packageName:"PACKAGES";
-        const versionText = detailData && detailData.packageVersion? detailData.packageVersion: nameText==="PACKAGES"?null:"v1.0.0";
+        const versionText = detailData && detailData.packageVersion? 'v'+detailData.packageVersion: nameText==="PACKAGES"?null:"v1.0.0";
 
         const svg = d3.select(svgDom.value!)
             .attr("width", width)
@@ -53,6 +53,7 @@ import {ref} from "vue";
             svg.append("text")
                 .attr("x", width / 2)
                 .attr("y", height / 2 + 2)
+                // .attr("y", "52.5%")
                 .attr("text-anchor", "middle")
                 .attr("font-size", "18px")
                 .attr("dominant-baseline", "middle")
@@ -62,6 +63,7 @@ import {ref} from "vue";
             svg.append("text")
                 .attr("x", width / 2)
                 .attr("y", height / 2 - 10)
+                // .attr("y", "47%")
                 .attr("text-anchor", "middle")
                 .attr("font-size", "18px")
                 .attr("dominant-baseline", "middle")
@@ -72,6 +74,7 @@ import {ref} from "vue";
         svg.append("text")
             .attr("x", width / 2)
             .attr("y", height / 2 + 15)
+            // .attr("y", "59%")
             .attr("text-anchor", "middle")
             .attr("font-size", "16px")
             .attr("dominant-baseline", "middle")
@@ -82,9 +85,11 @@ import {ref} from "vue";
 
 <style scoped>
 .rectangle-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    height: 100%;
+    border: 1px salmon solid;
+    display: inline-flex;
+    justify-content: flex-start;
+    /*align-items: center;*/
     /*min-height: 100vh;*/
 }
 </style>
