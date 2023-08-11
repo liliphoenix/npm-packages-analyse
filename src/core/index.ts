@@ -20,6 +20,7 @@ program
 	.action(() => {
 		if (program.getOptionValue('analyze')) {
 			console.log(JSON.stringify(getFullDepTree(process.cwd()), null, 2));
+			analyzeDependencies({depth:Infinity,json:null})
 		}
 		if (program.getOptionValue('name')) {
 			console.log(
@@ -66,7 +67,11 @@ program
 	.option('-d, --depth <numbers>', 'Specify the depth')
 	.option('-s, --json <fileName>', 'file name')
 	.action((data, options) => {
-		console.log(colors.bold.blue('⭐️⭐️ 即将进行npm性能分析... ⭐️⭐️'));
+		analyzeDependencies(data)
+	});
+// analyze 解析函數
+const analyzeDependencies=(data: { depth: number | undefined; json: string | null; })=>{
+	console.log(colors.bold.blue('⭐️⭐️ 即将进行npm性能分析... ⭐️⭐️'));
 		// 限制层数的话就传入限制的层数
 		if (data.depth) {
 			dependenciesTree = getFullDepTree(process.cwd(), data.depth);
@@ -133,5 +138,5 @@ program
 				);
 			}
 		}
-	});
+}
 program.parse(process.argv);

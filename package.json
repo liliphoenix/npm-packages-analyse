@@ -10,7 +10,7 @@
     "prepare": "husky install"
   },
   "bin": {
-    "npm-cli": "dist/index-umd.js"
+    "npm-cli": "dist/min/index-umd.min.js"
   },
   "files": [
     "dist"
