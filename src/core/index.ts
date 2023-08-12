@@ -2,15 +2,14 @@
 import { Command } from "commander";
 import path from "path";
 import express from "express";
-import {log} from "util";
 import {getFullDepTree} from "./readDep/printDependencyGraph";
-// import opn from "opn";
 
 const opn = require("opn")
 const program = new Command();
 program
     .name("npm-cli")
     .description('NPM CLI to some JavaScript string utilities')
+    .version(`${require('../package').version}`)
     .option('-v, --version', 'output the version number')
     .option('-a, --analyze', 'output the package analyze result', ()=>{
         console.log("这里是默认的分析逻辑")
@@ -18,10 +17,7 @@ program
     .option('-n, --name', 'output the tool name', () => {
         console.log(`${require('../package').name}`)
     })
-    .version(`${require('../package').version}`)
     .usage('<command> [options]');
-
-
 
 // 指令
 program.command('name')
