@@ -31,7 +31,7 @@ program.command('version')
 program
     .command('analyze')
     .option('-d, --depth <numbers>', 'Specify the depth')
-    .option('-s, --json <fileName>', 'File path')
+    .option('-s, --json <filePath>', 'File path')
     .action((data, options) => {
         console.log("即将进行npm性能分析")
         // @ts-ignore
