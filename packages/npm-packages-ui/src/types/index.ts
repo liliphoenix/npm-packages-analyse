@@ -11,4 +11,3 @@ interface NpmAnalyseRes {
     name: string
     version: string
 }
-

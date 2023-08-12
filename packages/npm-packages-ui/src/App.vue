@@ -1,32 +1,34 @@
 <template>
 <!--    <div style="display: block">{{npmAnalyseRes}}</div>-->
-<!-- 方块方式 -->
-    <div v-if="npmAnalyseRes && String(npmAnalyseRes) !== '{}'">
-      <drawRect
-              data-floor="1"
-              :width="width"
-              :height="100"
-              :detailData="dealDetailDate(svgColor['floor_'+1].bgColor, svgColor['floor_'+1].borderColor,
-              <string>npmAnalyseRes!.name, <string>npmAnalyseRes!.version)" />
-      <div class="child-box">
-          <div v-for="(msg, key) in npmAnalyseRes!.dependencies" :key="key"
-               :data-test="msg!.dependencies.length"
-               :class="msg!.dependencies.length==0? 'setBlock':'setInline'">
-              <div style="display: inline-block">
-                <drawRect
-                        data-floor="2"
-                        :width="0"
-                        :height="100"
-                        :detailData="dealDetailDate(svgColor['floor_'+2].bgColor, svgColor['floor_'+2].borderColor,
-                        msg!.name, msg!.version)" />
-              </div>
-              <div v-if="msg!.dependencies.length>0" style="display: inline-block">
-                <!--  属性floor 由于组件中floor今日便+1，所以这里就给2了 -->
-                <renderMore :packageDate="msg!.dependencies" :colorObj="svgColor['floor_'+3]" :floor="3"/>
-              </div>
-          </div>
-      </div>
-    </div>
+<!-- echarts -->
+  <treemapDrillDown :packageData="npmAnalyseRes"/>
+<!--&lt;!&ndash; 方块方式 &ndash;&gt;-->
+<!--    <div v-if="npmAnalyseRes && String(npmAnalyseRes) !== '{}'">-->
+<!--      <drawRect-->
+<!--              data-floor="1"-->
+<!--              :width="width"-->
+<!--              :height="100"-->
+<!--              :detailData="dealDetailDate(svgColor['floor_'+1].bgColor, svgColor['floor_'+1].borderColor,-->
+<!--              <string>npmAnalyseRes!.name, <string>npmAnalyseRes!.version)" />-->
+<!--      <div class="child-box">-->
+<!--          <div v-for="(msg, key) in npmAnalyseRes!.dependencies" :key="key"-->
+<!--               :data-test="msg!.dependencies.length"-->
+<!--               :class="msg!.dependencies.length==0? 'setBlock':'setInline'">-->
+<!--              <div style="display: inline-block">-->
+<!--                <drawRect-->
+<!--                        data-floor="2"-->
+<!--                        :width="0"-->
+<!--                        :height="100"-->
+<!--                        :detailData="dealDetailDate(svgColor['floor_'+2].bgColor, svgColor['floor_'+2].borderColor,-->
+<!--                        msg!.name, msg!.version)" />-->
+<!--              </div>-->
+<!--              <div v-if="msg!.dependencies.length>0" style="display: inline-block">-->
+<!--                &lt;!&ndash;  属性floor 由于组件中floor今日便+1，所以这里就给2了 &ndash;&gt;-->
+<!--                <renderMore :packageDate="msg!.dependencies" :colorObj="svgColor['floor_'+3]" :floor="3"/>-->
+<!--              </div>-->
+<!--          </div>-->
+<!--      </div>-->
+<!--    </div>-->
 
 <!--  <RouterView />-->
 </template>
@@ -39,6 +41,7 @@ import DrawRect from "@/components/drawRect.vue";
 import {dealDetailDate} from "@/utils/formatDate";
 import RenderMore from "@/components/renderMore.vue";
 import {svgColor} from "@/config/colorMsg";
+import TreemapDrillDown from "@/components/treemapDrillDown.vue";
 
 const width = ref<Number>(0);
 let npmAnalyseRes = ref<NpmAnalyseRes>()
