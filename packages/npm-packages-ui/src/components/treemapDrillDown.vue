@@ -210,7 +210,7 @@ function initEChart() {
                                 let packageData = [
                                     `${params.data.name}`,
                                     `v${params.data.version}`,
-                                    `${params.data.circular}`,
+                                    // `${params.data.circular}`,
                                 ]
                                 return packageData.join('\n\n')
                             },
