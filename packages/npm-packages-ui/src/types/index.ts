@@ -5,9 +5,9 @@ interface DetailData {
     packageVersion: string
 }
 
-interface NpmAnalyseRes {
+interface NpmAnalyzeRes {
     circular: boolean
-    dependencies: Array<NpmAnalyseRes>
+    dependencies: Array<NpmAnalyzeRes>
     name: string
     version: string
 }

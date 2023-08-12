@@ -12,7 +12,7 @@ program
     .name("npm-cli")
     .description('NPM CLI to some JavaScript string utilities')
     .option('-v, --version', 'output the version number')
-    .option('-a, --analyze', 'output the package analyse result', ()=>{
+    .option('-a, --analyze', 'output the package analyze result', ()=>{
         console.log("这里是默认的分析逻辑")
     })
     .option('-n, --name', 'output the tool name', () => {
@@ -54,9 +54,9 @@ program
             // 设置静态资源路径
             app.use(express.static(vueDistPath));
 
-            app.get("/getNpmAnalyseRes", (req, res) => {
+            app.get("/getNpmAnalyzeRes", (req, res) => {
                 // @ts-ignore
-                const data = { analyseRes: dependenciesTree };
+                const data = { analyzeRes: dependenciesTree };
                 res.json(data); // 返回 JSON 数据
             });
 

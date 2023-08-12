@@ -21,7 +21,7 @@ import {svgColor} from "@/config/colorMsg";
 import {onBeforeMount, ref, watch} from "vue";
 
 const props = defineProps<{
-    packageDate:Array<NpmAnalyseRes>
+    packageDate:Array<NpmAnalyzeRes>
     colorObj: {bgColor: string, borderColor: string}
     floor: number
 }>()

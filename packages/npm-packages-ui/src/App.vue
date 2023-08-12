@@ -1,17 +1,17 @@
 <template>
-<!--    <div style="display: block">{{npmAnalyseRes}}</div>-->
+<!--    <div style="display: block">{{npmAnalyzeRes}}</div>-->
 <!-- echarts -->
-  <treemapDrillDown :packageData="npmAnalyseRes"/>
+  <treemapDrillDown :packageData="npmAnalyzeRes"/>
 <!--&lt;!&ndash; 方块方式 &ndash;&gt;-->
-<!--    <div v-if="npmAnalyseRes && String(npmAnalyseRes) !== '{}'">-->
+<!--    <div v-if="npmAnalyzeRes && String(npmAnalyzeRes) !== '{}'">-->
 <!--      <drawRect-->
 <!--              data-floor="1"-->
 <!--              :width="width"-->
 <!--              :height="100"-->
 <!--              :detailData="dealDetailDate(svgColor['floor_'+1].bgColor, svgColor['floor_'+1].borderColor,-->
-<!--              <string>npmAnalyseRes!.name, <string>npmAnalyseRes!.version)" />-->
+<!--              <string>npmAnalyzeRes!.name, <string>npmAnalyzeRes!.version)" />-->
 <!--      <div class="child-box">-->
-<!--          <div v-for="(msg, key) in npmAnalyseRes!.dependencies" :key="key"-->
+<!--          <div v-for="(msg, key) in npmAnalyzeRes!.dependencies" :key="key"-->
 <!--               :data-test="msg!.dependencies.length"-->
 <!--               :class="msg!.dependencies.length==0? 'setBlock':'setInline'">-->
 <!--              <div style="display: inline-block">-->
@@ -44,26 +44,27 @@ import {svgColor} from "@/config/colorMsg";
 import TreemapDrillDown from "@/components/treemapDrillDown.vue";
 
 const width = ref<Number>(0);
-let npmAnalyseRes = ref<NpmAnalyseRes>()
+let npmAnalyzeRes = ref<NpmAnalyzeRes>()
 
 dealWidth()
 
 onBeforeMount(() =>{
-  getNpmAnalyseRes()
+    console.warn("字节青训营 - 鹰隼小队 - npm packages 分析工具")
+    getNpmAnalyzeRes()
 })
 
 function dealWidth(){
     width.value = document.querySelector("#app")!.clientWidth;
 }
 
-function getNpmAnalyseRes() {
-    fetch("/getNpmAnalyseRes")
+function getNpmAnalyzeRes() {
+    fetch("/getNpmAnalyzeRes")
         .then(response => response.json())
         .then(data => {
             // 使用返回的数据
-            console.info("This is analyse res：",data.analyseRes)
-            if (data.analyseRes) {
-                npmAnalyseRes.value = data.analyseRes;
+            // console.info("This is analyze res：",data.analyzeRes)
+            if (data.analyzeRes) {
+                npmAnalyzeRes.value = data.analyzeRes;
             }
         })
 }

@@ -1,9 +1,9 @@
 // vite.config.ts
 import { fileURLToPath, URL } from "node:url";
-import { defineConfig } from "file:///E:/A-SOURCE-CODE/frontend%20npm/npm-packages-analyse/packages/npm-packages-ui/node_modules/vite/dist/node/index.js";
-import vue from "file:///E:/A-SOURCE-CODE/frontend%20npm/npm-packages-analyse/packages/npm-packages-ui/node_modules/@vitejs/plugin-vue/dist/index.mjs";
-import vueJsx from "file:///E:/A-SOURCE-CODE/frontend%20npm/npm-packages-analyse/packages/npm-packages-ui/node_modules/@vitejs/plugin-vue-jsx/dist/index.mjs";
-var __vite_injected_original_import_meta_url = "file:///E:/A-SOURCE-CODE/frontend%20npm/npm-packages-analyse/packages/npm-packages-ui/vite.config.ts";
+import { defineConfig } from "file:///E:/A-SOURCE-CODE/frontend%20npm/npm-packages-analyze/packages/npm-packages-ui/node_modules/vite/dist/node/index.js";
+import vue from "file:///E:/A-SOURCE-CODE/frontend%20npm/npm-packages-analyze/packages/npm-packages-ui/node_modules/@vitejs/plugin-vue/dist/index.mjs";
+import vueJsx from "file:///E:/A-SOURCE-CODE/frontend%20npm/npm-packages-analyze/packages/npm-packages-ui/node_modules/@vitejs/plugin-vue-jsx/dist/index.mjs";
+var __vite_injected_original_import_meta_url = "file:///E:/A-SOURCE-CODE/frontend%20npm/npm-packages-analyze/packages/npm-packages-ui/vite.config.ts";
 var vite_config_default = defineConfig({
   plugins: [
     vue(),

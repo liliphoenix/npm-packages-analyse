@@ -24,7 +24,7 @@ import {onMounted, ref, watch} from "vue";
 echarts.use([TitleComponent, TooltipComponent, TreemapChart, CanvasRenderer]);
 
 const props = defineProps<{
-    packageData: NpmAnalyseRes | undefined
+    packageData: NpmAnalyzeRes | undefined
 }>()
 const chartDom = ref<HTMLElement | null | undefined>()
 
@@ -58,9 +58,12 @@ interface TreeNodeTest {
 }
 
 watch(()=>props.packageData, (newVal) => {
-    if(!newVal) return
+    if(!newVal) {
+        myChart.hideLoading();
+        return
+    }
     initData()
-    console.log("testPackageData", testPackageData)
+    console.group("npm packages struct", testPackageData.children)
 })
 onMounted(() => {
     myChart = echarts.init(chartDom.value);
@@ -81,7 +84,7 @@ window.addEventListener("resize", (event) => {
 function initData() {
     // const rawData:any = testData;
     // convert(rawData, data, '');
-    formatData(<NpmAnalyseRes>props.packageData, testPackageData, 1)
+    formatData(<NpmAnalyzeRes>props.packageData, testPackageData, 1)
     myChart.hideLoading();
     initEChart()
 }
@@ -92,7 +95,7 @@ let num = ref<number>(0)
  * 整理数据格式
  * @param
  * */
-function formatData(source: NpmAnalyseRes, target: TreeNodeTest, size: number){
+function formatData(source: NpmAnalyzeRes, target: TreeNodeTest, size: number){
     // console.log(source.name, source.version, source.circular)
     if(!source){ return }
     let packageChildren = source.dependencies
@@ -171,7 +174,14 @@ function initEChart() {
 
             tooltip: {
                 // trigger: "item",
-                // formatter: "{a} <br\/>{b} : {c}%",
+                formatter: function (params:any) {
+                    let hintData = [
+                        `name: ${params.data.name}`,
+                        `version: v${params.data.version}`,
+                        `circular: ${params.data.circular}`,
+                    ]
+                    return hintData.join(',&nbsp;&nbsp;')
+                },
                 textStyle: {
                     fontSize: generalSize
                 }
@@ -181,38 +191,55 @@ function initEChart() {
                     name: props.packageData?.name +" v"+props.packageData?.version,
                     type: 'treemap',
                     visibleMin: 300,
+                    labelLine:{
+                        smooth: true
+                    },
+                    breadcrumb:{
+                        height: 50,
+                        // 常规
+                        itemStyle:{
+                            textStyle:{
+                                fontSize: titleSize
+                            }
+                        },
+                        // 鼠标悬停
+                        emphasis:{
+                            itemStyle:{
+                                textStyle:{
+                                    fontSize: titleSize
+                                }
+                            },
+                        }
+                    },
                     label: {
                         normal: {
                             show: true,
                             // position: 'insideTopLeft',
                             formatter: function (params:any) {
-                                console.log(params, 'parms', echarts.format)
-                                // let arr = [
-                                //     '{name|' + params.name + '}',
-                                //     '{budget|' + echarts.version + '}'
-                                // ]
-                                let testData = [
-                                    `name：${params.data.name}`,
-                                    `version：${params.data.version}`,
-                                    `circular：${params.data.circular}`,
+                                // console.log(params, 'parms', echarts.format)
+                                let packageData = [
+                                    `${params.data.name}`,
+                                    `v${params.data.version}`,
+                                    `${params.data.circular}`,
                                 ]
-                                return testData.join('\n')
+                                return packageData.join('\n\n')
                             },
                             // 设置文本位置
                             // rich: {
-                            //     name: {
+                            //     a: {
                             //         fontSize: 12,
                             //         color: '#fff',
                             //         position: 'top',
                             //     },
-                            //     budget: {
+                            //     b: {
                             //         color: '#fff',
                             //         position: 'insideTopRight ',
                             //         lineHeight:10
                             //     }
                             // },
                             textStyle: {
-                                fontSize: generalSize
+                                fontSize: generalSize,
+                                textAlign: "center",
                             }
                         },
                     },
