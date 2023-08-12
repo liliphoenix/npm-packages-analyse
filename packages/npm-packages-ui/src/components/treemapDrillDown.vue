@@ -5,7 +5,6 @@
 </template>
 
 <script setup lang="ts">
-import {testData} from "@/config/testData"
 import * as echarts from 'echarts/core';
 import {
     TitleComponent,
@@ -15,11 +14,7 @@ import {
     TreemapChart
 } from 'echarts/charts';
 import { CanvasRenderer } from 'echarts/renderers';
-import {onMounted, ref, watch} from "vue";
-// import {TitleComponentOption, TooltipComponentOption, TreemapSeriesOption} from "echarts";
-// type EChartsOption = echarts.ComposeOption<
-//     TitleComponentOption | TooltipComponentOption | TreemapSeriesOption
-// >;
+import {markRaw, onMounted, ref, toRaw, watch} from "vue";
 
 echarts.use([TitleComponent, TooltipComponent, TreemapChart, CanvasRenderer]);
 
@@ -34,27 +29,20 @@ let timer: NodeJS.Timeout | null = null;
 let data = {
     children: [] as TreeNode[]
 } as TreeNode;
-let testPackageData = {
-    children: [] as TreeNodeTest[]
-} as TreeNodeTest;
-
-// type RawNode = {
-//     [key: string]: RawNode;
-// } & {
-//     $count: number;
-// };
-interface TreeNode {
-    name: string;
-    value: number;
-    children?: TreeNode[];
+let packageData = {
+    children: [] as TreeNode[]
+} as TreeNode;
+interface PackageVersion {
+    [key: string]: Array<string>
 }
+let packageVersion = ref<PackageVersion>({})
 
-interface TreeNodeTest {
+interface TreeNode {
     name: string;
     version: string;
     circular: boolean;
     value?: number
-    children?: TreeNodeTest[];
+    children?: TreeNode[];
 }
 
 watch(()=>props.packageData, (newVal) => {
@@ -63,7 +51,10 @@ watch(()=>props.packageData, (newVal) => {
         return
     }
     initData()
-    console.group("npm packages struct", testPackageData.children)
+    dealPackageVersion(packageData.children)
+    console.group("npm packages struct", packageData.children)
+    console.table(JSON.parse(JSON.stringify(packageVersion.value)))
+    // console.group("npm package duplicate version",markRaw(packageVersion.value))
 })
 onMounted(() => {
     myChart = echarts.init(chartDom.value);
@@ -82,20 +73,40 @@ window.addEventListener("resize", (event) => {
 })
 
 function initData() {
-    // const rawData:any = testData;
-    // convert(rawData, data, '');
-    formatData(<NpmAnalyzeRes>props.packageData, testPackageData, 1)
+    formatData(<NpmAnalyzeRes>props.packageData, packageData, 1)
     myChart.hideLoading();
     initEChart()
 }
 
-let num = ref<number>(0)
+/**
+ * 处理包的重复版本
+ * */
+function dealPackageVersion(packageData: TreeNode[] | undefined){
+    if(!packageData) return
+    let dataObj = packageVersion.value;
+    for (const packagesMsg of packageData) {
+        // console.log("packagesMsg", packagesMsg.name)
+        if(!dataObj[packagesMsg.name]){
+            dataObj![packagesMsg.name] = new Array<string>
+            dataObj![packagesMsg.name].push(packagesMsg.version)
+        }else {
+            let existArr = dataObj![packagesMsg.name].filter(val => {
+                return val === packagesMsg.version
+            })
+            if(existArr.length == 0) dataObj![packagesMsg.name].push(packagesMsg.version)
+        }
+
+        if(packagesMsg.children && packagesMsg.children?.length>0){
+            dealPackageVersion(packagesMsg.children)
+        }
+    }
+    packageVersion.value = dataObj;
+}
 
 /**
  * 整理数据格式
- * @param
  * */
-function formatData(source: NpmAnalyzeRes, target: TreeNodeTest, size: number){
+function formatData(source: NpmAnalyzeRes, target: TreeNode, size: number){
     // console.log(source.name, source.version, source.circular)
     if(!source){ return }
     let packageChildren = source.dependencies
@@ -107,7 +118,7 @@ function formatData(source: NpmAnalyzeRes, target: TreeNodeTest, size: number){
                 circular: packageChildren[key]!.circular,
                 value: size+Object.keys(packageChildren[key].dependencies).length,
                 children:[]
-            } as TreeNodeTest;
+            } as TreeNode;
             target.children?.push(child)
 
             formatData(packageChildren[key], child, size+Object.keys(packageChildren[key].dependencies).length)
@@ -117,7 +128,7 @@ function formatData(source: NpmAnalyzeRes, target: TreeNodeTest, size: number){
                 version: packageChildren[key]!.version,
                 circular: packageChildren[key]!.circular,
                 value: size+Object.keys(packageChildren[key].dependencies).length,
-            } as TreeNodeTest;
+            } as TreeNode;
             target.children?.push(child)
         }
     }
@@ -132,28 +143,6 @@ function setCanvas() {
         width: width,
         height: height
     });
-}
-function convert(source: any, target: TreeNode, basePath: string) {
-    for (let key in source) {
-        let path = basePath ? basePath + '.' + key : key;
-        if (!key.match(/^\$/)) {
-            target.children = target.children || [];
-            const child = {
-                name: path
-            } as TreeNode;
-            target.children.push(child);
-            convert(source[key], child, path);
-        }
-    }
-
-    if (!target.children) {
-        target.value = source.$count || 1;
-    } else {
-        target.children.push({
-            name: basePath,
-            value: source.$count
-        });
-    }
 }
 function initEChart() {
     const generalSize = 18
@@ -179,6 +168,7 @@ function initEChart() {
                         `name: ${params.data.name}`,
                         `version: v${params.data.version}`,
                         `circular: ${params.data.circular}`,
+                        `multi-version: ${(packageVersion.value[params.data.name]?.length > 2)}`,
                     ]
                     return hintData.join(',&nbsp;&nbsp;')
                 },
@@ -253,7 +243,7 @@ function initEChart() {
                     // },
 
                     // data: data.children,
-                    data: testPackageData.children,
+                    data: packageData.children,
                     leafDepth: 2,
                     levels: [
                         {
