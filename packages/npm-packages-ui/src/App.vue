@@ -1,42 +1,70 @@
 <template>
-<!--  <header>-->
-<!--    <img alt="Vue logo" class="logo" src="@/assets/logo.svg" width="125" height="125" />-->
-<!--    <div class="wrapper">-->
-<!--      <HelloWorld msg="You did it!" />-->
-
-<!--      <nav>-->
-<!--        <RouterLink to="/">Home</RouterLink>-->
-<!--        <RouterLink to="/about">About</RouterLink>-->
-<!--      </nav>-->
+<!--    <div style="display: block">{{npmAnalyzeRes}}</div>-->
+<!-- echarts -->
+  <treemapDrillDown :packageData="npmAnalyzeRes"/>
+<!--&lt;!&ndash; 方块方式 &ndash;&gt;-->
+<!--    <div v-if="npmAnalyzeRes && String(npmAnalyzeRes) !== '{}'">-->
+<!--      <drawRect-->
+<!--              data-floor="1"-->
+<!--              :width="width"-->
+<!--              :height="100"-->
+<!--              :detailData="dealDetailDate(svgColor['floor_'+1].bgColor, svgColor['floor_'+1].borderColor,-->
+<!--              <string>npmAnalyzeRes!.name, <string>npmAnalyzeRes!.version)" />-->
+<!--      <div class="child-box">-->
+<!--          <div v-for="(msg, key) in npmAnalyzeRes!.dependencies" :key="key"-->
+<!--               :data-test="msg!.dependencies.length"-->
+<!--               :class="msg!.dependencies.length==0? 'setBlock':'setInline'">-->
+<!--              <div style="display: inline-block">-->
+<!--                <drawRect-->
+<!--                        data-floor="2"-->
+<!--                        :width="0"-->
+<!--                        :height="100"-->
+<!--                        :detailData="dealDetailDate(svgColor['floor_'+2].bgColor, svgColor['floor_'+2].borderColor,-->
+<!--                        msg!.name, msg!.version)" />-->
+<!--              </div>-->
+<!--              <div v-if="msg!.dependencies.length>0" style="display: inline-block">-->
+<!--                &lt;!&ndash;  属性floor 由于组件中floor今日便+1，所以这里就给2了 &ndash;&gt;-->
+<!--                <renderMore :packageDate="msg!.dependencies" :colorObj="svgColor['floor_'+3]" :floor="3"/>-->
+<!--              </div>-->
+<!--          </div>-->
+<!--      </div>-->
 <!--    </div>-->
-<!--  </header>-->
-    <div style="display: block">{{npmAnalyseRes}}</div>
+
 <!--  <RouterView />-->
 </template>
 
 <script setup lang="ts">
 import { RouterLink, RouterView } from 'vue-router'
 import HelloWorld from './components/HelloWorld.vue'
-import {onMounted, reactive, ref} from "vue";
+import {computed, onBeforeMount, onMounted, reactive, ref} from "vue";
+import DrawRect from "@/components/drawRect.vue";
+import {dealDetailDate} from "@/utils/formatDate";
+import RenderMore from "@/components/renderMore.vue";
+import {svgColor} from "@/config/colorMsg";
+import TreemapDrillDown from "@/components/treemapDrillDown.vue";
 
-// const data = reactive({
-//     npmAnalyseRes: {}
-// })
+const width = ref<Number>(0);
+let npmAnalyzeRes = ref<NpmAnalyzeRes>()
 
-let npmAnalyseRes = ref({})
+dealWidth()
 
-onMounted(() =>{
-    getNpmAnalyseRes()
+onBeforeMount(() =>{
+    console.warn("字节青训营 - 鹰隼小队 - npm packages 分析工具")
+    getNpmAnalyzeRes()
 })
 
-function getNpmAnalyseRes() {
-    fetch("/getNpmAnalyseRes")
+function dealWidth(){
+    width.value = document.querySelector("#app")!.clientWidth;
+}
+
+function getNpmAnalyzeRes() {
+    fetch("/getNpmAnalyzeRes")
         .then(response => response.json())
         .then(data => {
             // 使用返回的数据
-            console.info("This is analyse res：",data.analyseRes)
-            if (data.analyseRes) {
-                npmAnalyseRes.value = data.analyseRes;
+            // console.info("This is analyze res：",data.analyzeRes)
+            if (data.analyzeRes) {
+                npmAnalyzeRes.value = data.analyzeRes;
             }
         })
 }
@@ -44,65 +72,15 @@ function getNpmAnalyseRes() {
 </script>
 
 <style scoped>
-header {
-  line-height: 1.5;
-  max-height: 100vh;
+#app{
+    width: 80%;
+    min-height: 100vh;
+    margin: auto;
 }
-
-.logo {
-  display: block;
-  margin: 0 auto 2rem;
-}
-
-nav {
-  width: 100%;
-  font-size: 12px;
-  text-align: center;
-  margin-top: 2rem;
-}
-
-nav a.router-link-exact-active {
-  color: var(--color-text);
-}
-
-nav a.router-link-exact-active:hover {
-  background-color: transparent;
-}
-
-nav a {
-  display: inline-block;
-  padding: 0 1rem;
-  border-left: 1px solid var(--color-border);
-}
-
-nav a:first-of-type {
-  border: 0;
-}
-
-@media (min-width: 1024px) {
-  header {
+.setInline{
     display: flex;
-    place-items: center;
-    padding-right: calc(var(--section-gap) / 2);
-  }
-
-  .logo {
-    margin: 0 2rem 0 0;
-  }
-
-  header .wrapper {
-    display: flex;
-    place-items: flex-start;
-    flex-wrap: wrap;
-  }
-
-  nav {
-    text-align: left;
-    margin-left: -1rem;
-    font-size: 1rem;
-
-    padding: 1rem 0;
-    margin-top: 1rem;
-  }
+}
+.setBlock{
+    display: block;
 }
 </style>

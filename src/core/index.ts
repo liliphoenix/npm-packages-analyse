@@ -1,11 +1,11 @@
 #!/usr/bin/env node
-import { Command } from 'commander';
-import path from 'path';
-import express from 'express';
-import { getFullDepTree } from './readDep/printDependencyGraph';
-import fs from 'fs';
-const colors = require('colors');
-const opn = require('opn');
+import { Command } from "commander";
+import path from "path";
+import express from "express";
+import {log} from "util";
+// import opn from "opn";
+
+const opn = require("opn")
 const program = new Command();
 //定义生成的循环树
 let dependenciesTree: dependenciesType;
@@ -162,29 +162,4 @@ const analyzeDependencies = (data: {
 				judgeExist(pathDir);
 			}
 
-			
 
-			// fs.exists((err)=>{
-
-			// })
-		} else {
-			console.log(
-				colors.bold.red('❎ Wrong file path,your file path should be like:')
-			);
-			console.log(
-				colors.yellow(
-					'✨ Absolute path:' +
-						colors.bold('D:/dist/dependenciesTree.json') +
-						' or ' +
-						colors.bold('D:\\dist\\dependenciesTree.json')
-				)
-			);
-			console.log(
-				colors.yellow(
-					'✨ Relative path:' + colors.bold('/dist/dependenciesTree.json')
-				)
-			);
-		}
-	}
-};
-program.parse(process.argv);
