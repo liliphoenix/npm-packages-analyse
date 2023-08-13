@@ -4,8 +4,10 @@ import path from "path";
 import express from "express";
 import {log} from "util";
 // import opn from "opn";
-
+import colors from "colors"
 const opn = require("opn")
+import { getFullDepTree } from "./readDep/printDependencyGraph";
+import fs from "fs"
 const program = new Command();
 //定义生成的循环树
 let dependenciesTree: dependenciesType;
@@ -162,4 +164,6 @@ const analyzeDependencies = (data: {
 				judgeExist(pathDir);
 			}
 
-
+		}
+	}
+}
