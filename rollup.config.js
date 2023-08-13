@@ -34,7 +34,7 @@ export default defineConfig([
 			},
 		],
 		//作用分別是：ts支持，node的path库等支持，cjs的引入和导出方式支持，json文件的导入支持,代码的压缩打包.
-		plugins: [ts(), resolve(), commonjs(), json()],
+		plugins: [ts(), resolve(), commonjs(), json(), terser()],
 	},
 	{
 		//普通文件输出
@@ -64,6 +64,6 @@ export default defineConfig([
 			},
 		],
 		//作用分別是：ts支持，node的path库等支持，cjs的引入和导出方式支持，json文件的导入支持,代码的压缩打包.
-		plugins: [ts(), resolve(), commonjs(), json(), terser()],
+		plugins: [ts(), resolve(), commonjs(), json()],
 	},
 ]);
