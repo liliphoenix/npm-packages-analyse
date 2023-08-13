@@ -2,7 +2,6 @@
 import { Command } from "commander";
 import path from "path";
 import express from "express";
-import {log} from "util";
 // import opn from "opn";
 import colors from "colors"
 const opn = require("opn")
