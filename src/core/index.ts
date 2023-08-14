@@ -1,12 +1,12 @@
 #!/usr/bin/env node
-import { Command } from "commander";
-import path from "path";
-import express from "express";
+import { Command } from 'commander';
+import path from 'path';
+import express from 'express';
 // import opn from "opn";
-import colors from "colors"
-const opn = require("opn")
-import { getFullDepTree } from "./readDep/printDependencyGraph";
-import fs from "fs"
+import colors from 'colors';
+const opn = require('opn');
+import { getFullDepTree } from './readDep/printDependencyGraph';
+import fs from 'fs';
 const program = new Command();
 //定义生成的循环树
 let dependenciesTree: dependenciesType;
@@ -88,6 +88,7 @@ const analyzeDependencies = (data: {
 	json: string | null;
 }) => {
 	console.log(colors.bold.blue('⭐️⭐️ 即将进行npm性能分析... ⭐️⭐️'));
+	console.log(colors.bold.blue('......'));
 	// 限制层数的话就传入限制的层数
 	if (data.depth) {
 		dependenciesTree = getFullDepTree(process.cwd(), data.depth);
@@ -113,44 +114,65 @@ const analyzeDependencies = (data: {
 			opn(url);
 		});
 	} else {
-		let jsonFilePath = path.join(process.cwd(), data.json);
+		
 		//相对路径
 		const relativeReg = new RegExp('^[^/]+(?:/[^/]+)*.json$');
 		//绝对路径
 		// 如果是绝对路径就不在拼接地址
+		let jsonFilePath: string ='';
 		if (data.json.split(':')[0].length == 1) {
-			jsonFilePath = data.json;
+			if (fs.existsSync(data.json.split(':')[0] + ':\\')) {
+					jsonFilePath = data.json;
+				if (data.json.includes('.json')) {
+					jsonFilePath = path.join(data.json);
+				} else {
+					jsonFilePath = path.join(data.json, 'dependenciesTree.json');
+				}
+			}else{
+			}
+		} else {
+			if (data.json.includes('.json')) {
+				jsonFilePath = path.join(process.cwd(), data.json);
+			} else {
+				jsonFilePath = path.join(
+					process.cwd(),
+					data.json,
+					'dependenciesTree.json'
+				);
+			}
 		}
 		//判断地址是否按照格式来写
 		if (relativeReg.test(jsonFilePath)) {
 			let pathDir: fs.PathLike;
 			const judgeExist = (pathDir: string) => {
-				if(pathDir.split(':')[0].length == 1){
+				if (pathDir.split(':')[0].length == 1) {
 					if (!fs.existsSync(pathDir)) {
 						fs.mkdir(pathDir, () => {});
 					}
-					writeToFile()
-				}else{
-					if (!fs.existsSync(path.join(__dirname,pathDir))){
+					writeToFile();
+				} else {
+					if (!fs.existsSync(path.join(__dirname, pathDir))) {
 						fs.mkdir(pathDir, () => {});
 					}
-					writeToFile()
+					writeToFile();
 				}
 			};
-			const writeToFile=()=>{
+			const writeToFile = () => {
 				fs.writeFile(
 					jsonFilePath,
 					JSON.stringify(dependenciesTree, null, 2),
 					(err) => {
 						if (err) {
 						}
-						console.log(colors.bold.green(' 🎉 🎉 🎉 成功写入json文件 🎉 🎉 🎉'));
+						console.log(
+							colors.bold.green(' 🎉 🎉 🎉 成功写入json文件 🎉 🎉 🎉')
+						);
 						console.log(
 							colors.green(`🎊 保存路径为: ${colors.bold(jsonFilePath)}`)
 						);
 					}
 				);
-			}
+			};
 			if (jsonFilePath.includes('/')) {
 				let json = jsonFilePath.split('/');
 				json.pop();
@@ -162,8 +184,29 @@ const analyzeDependencies = (data: {
 				pathDir = json.join('\\');
 				judgeExist(pathDir);
 			}
-
+		} else {
+			console.log(
+				colors.bold.red('❎ Wrong file path,your file path should be like:')
+			);
+			console.log(
+				colors.yellow(
+					'✨ Absolute path:' +
+						colors.bold('D:/dist/dependenciesTree.json') +
+						' or ' +
+						colors.bold('D:\\dist\\dependenciesTree.json')
+				)
+			);
+			console.log(
+				colors.yellow(
+					'✨ Relative path:' + colors.bold('/dist/dependenciesTree.json')
+				)
+			);
+			console.log(
+				colors.yellow(
+					colors.bold('Of course, you can also choose not to specify a file name, and we will assign a default file name called "dependenciesTree.json".')
+				)
+			);
 		}
 	}
-}
-program.parse(process.argv)
+};
+program.parse(process.argv);
