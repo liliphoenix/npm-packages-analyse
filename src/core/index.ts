@@ -166,3 +166,4 @@ const analyzeDependencies = (data: {
 		}
 	}
 }
+program.parse(process.argv)
