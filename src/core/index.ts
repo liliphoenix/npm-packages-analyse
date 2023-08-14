@@ -5,6 +5,7 @@ import express from 'express';
 // import opn from "opn";
 import colors from 'colors';
 const opn = require('opn');
+const portfinder = require('portfinder');
 import { getFullDepTree } from './readDep/printDependencyGraph';
 import fs from 'fs';
 const program = new Command();
@@ -99,23 +100,26 @@ const analyzeDependencies = (data: {
 		// active vue project
 		const app = express();
 		const vuePath: string = '../packages/npm-packages-ui/dist';
-		const port = process.env.PORT || 3000;
 		const vueDistPath = path.join(path.resolve(__dirname, '..'), vuePath);
-		console.log("vueDistPath", vueDistPath)
 		// 设置静态资源路径
 		app.use(express.static(vueDistPath));
 		app.get('/getNpmAnalyzeRes', (req, res) => {
 			const data = { analyzeRes: dependenciesTree };
 			res.json(data); // 返回 JSON 数据
 		});
-
-		app.listen(port || 3000, () => {
-			const url = 'http://localhost:' + port;
-			console.log(colors.green(`✨ Server is running ${colors.bold(url)}`));
-			opn(url);
+		const host = "localhost"
+		portfinder.setBasePort(3000);
+		portfinder.getPort((_: Error, port: number) => {
+			app.listen(port, () => {
+				const url = 'http://'+`${host}`+':' + port;
+				console.log(colors.green(`✨ Server is running ${colors.bold(url)}`));
+				opn(url);
+			});
 		});
+
+
 	} else {
-		
+
 		//相对路径
 		const relativeReg = new RegExp('^[^/]+(?:/[^/]+)*.json$');
 		//绝对路径
