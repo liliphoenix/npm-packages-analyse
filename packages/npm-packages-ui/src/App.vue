@@ -62,7 +62,7 @@ function getNpmAnalyzeRes() {
         .then(response => response.json())
         .then(data => {
             // 使用返回的数据
-            console.info("This is analyze res：",data.analyzeRes)
+            // console.info("This is analyze res：",data.analyzeRes)
             if (data.analyzeRes) {
                 npmAnalyzeRes.value = data.analyzeRes;
             }
