@@ -20,7 +20,7 @@ program
 	.option('-v, --version', 'output the package version')
 	.action(() => {
 		if (program.getOptionValue('analyze')) {
-			console.log(JSON.stringify(getFullDepTree(process.cwd()), null, 2));
+			// console.log(JSON.stringify(getFullDepTree(process.cwd()), null, 2));
 			analyzeDependencies({ depth: Infinity, json: null });
 		}
 		if (program.getOptionValue('name')) {
@@ -47,7 +47,7 @@ program.on('--help', function () {
 		`  analyze -d, --depth = <depth>  Specify the depth and open in browser`
 	);
 	console.log(
-		`  analyze --json = <filepath>  Specify the path and output a json file`
+		`  analyze -a, --json = <filepath>  Specify the path and output a json file`
 	);
 	console.log(` `);
 });
@@ -99,11 +99,12 @@ const analyzeDependencies = (data: {
 		const app = express();
 		const vuePath: string = '../packages/npm-packages-ui/dist';
 		const port = process.env.PORT || 3000;
-		const vueDistPath = path.join(__dirname, vuePath);
+		const vueDistPath = path.join(path.resolve(__dirname, '..'), vuePath);
+		console.log("vueDistPath", vueDistPath)
 		// 设置静态资源路径
 		app.use(express.static(vueDistPath));
 		app.get('/getNpmAnalyzeRes', (req, res) => {
-			const data = { analyseRes: dependenciesTree };
+			const data = { analyzeRes: dependenciesTree };
 			res.json(data); // 返回 JSON 数据
 		});
 
