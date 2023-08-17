@@ -99,9 +99,9 @@ const analyzeDependencies = (data: {
 	if (!data.json) {
 		// active vue project
 		const app = express();
-		const vuePath: string = '/packages/npm-packages-ui/dist';
+		const vuePath: string = '../../packages/npm-packages-ui/dist';
 		const port = process.env.PORT || 3000;
-		const vueDistPath =path.join(process.cwd(), vuePath)
+		const vueDistPath =path.join(__dirname, vuePath)
 		// 设置静态资源路径
 		app.use(express.static(vueDistPath));
 		app.get('/getNpmAnalyzeRes', (req, res) => {
