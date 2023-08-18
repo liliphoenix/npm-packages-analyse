@@ -8,6 +8,7 @@ const opn = require('opn');
 import { getFullDepTree } from './readDep/printDependencyGraph';
 import fs from 'fs';
 import os from 'os';
+import portfinder from "portfinder";
 const program = new Command();
 //定义生成的循环树
 let dependenciesTree: dependenciesType;
@@ -108,11 +109,14 @@ const analyzeDependencies = (data: {
 			const data = { analyzeRes: dependenciesTree };
 			res.json(data); // 返回 JSON 数据
 		});
-
-		app.listen(port || 3000, () => {
-			const url = 'http://localhost:' + port;
-			console.log(colors.green(`✨ Server is running ${colors.bold(url)}`));
-			opn(url);
+		const host = "localhost"
+		portfinder.setBasePort(3000);
+		portfinder.getPort((_: Error, port: number) => {
+			app.listen(port, () => {
+				const url = 'http://'+`${host}`+':' + port;
+				console.log(colors.green(`✨ Server is running ${colors.bold(url)}`));
+				opn(url);
+			});
 		});
 	} else {
 		//相对路径
