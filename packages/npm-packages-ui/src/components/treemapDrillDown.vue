@@ -244,7 +244,7 @@ function initEChart() {
 
                     // data: data.children,
                     data: packageData.children,
-                    leafDepth: 2,
+                    leafDepth: 1,
                     levels: [
                         {
                             itemStyle: {
