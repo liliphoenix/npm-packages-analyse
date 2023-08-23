@@ -1,6 +1,6 @@
 {
-  "name": "npm-cli-bytetech-ys" ,
-  "version": "1.0.0",
+  "name": "npm-cli-analysis" ,
+  "version": "2.2.1",
   "description": "",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -13,7 +13,12 @@
     "npm-cli": "dist/min/index-umd.min.js"
   },
   "files": [
-    "dist"
+    "dist",
+    "packages/npm-packages-ui/dist",
+    "packages/npm-packages-ui/README.md",
+    "packages/npm-packages-ui/package.json",
+    "packages/npm-packages-ui/package-lock.json",
+    "packages/npm-packages-ui/server.js"
   ],
   "keywords": [],
   "author": "",
