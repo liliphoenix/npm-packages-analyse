@@ -1,6 +1,6 @@
 {
   "name": "npm-cli-analysis" ,
-  "version": "2.2.1",
+  "version": "2.2.4",
   "description": "",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -13,7 +13,7 @@
     "npm-cli": "dist/min/index-umd.min.js"
   },
   "files": [
-    "dist",
+    "dist/min/index-umd.min.js",
     "packages/npm-packages-ui/dist",
     "packages/npm-packages-ui/README.md",
     "packages/npm-packages-ui/package.json",
