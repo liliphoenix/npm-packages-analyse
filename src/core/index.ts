@@ -8,7 +8,6 @@ const opn = require('opn');
 import { getFullDepTree } from './readDep/printDependencyGraph';
 import fs from 'fs';
 import os from 'os';
-import portfinder from "portfinder";
 const program = new Command();
 //定义生成的循环树
 let dependenciesTree: dependenciesType;
@@ -102,24 +101,105 @@ const analyzeDependencies = (data: {
 		const app = express();
 		const vuePath: string = '../../packages/npm-packages-ui/dist';
 		const port = process.env.PORT || 3000;
-		const vueDistPath =path.join(__dirname, vuePath)
+		const vueDistPath = path.join(__dirname, vuePath);
 		// 设置静态资源路径
 		app.use(express.static(vueDistPath));
 		app.get('/getNpmAnalyzeRes', (req, res) => {
 			const data = { analyzeRes: dependenciesTree };
 			res.json(data); // 返回 JSON 数据
 		});
-		const host = "localhost"
-		portfinder.setBasePort(3000);
-		portfinder.getPort((_: Error, port: number) => {
-			app.listen(port, () => {
-				const url = 'http://'+`${host}`+':' + port;
-				console.log(colors.green(`✨ Server is running ${colors.bold(url)}`));
-				opn(url);
-			});
+
+		app.listen(port || 3000, () => {
+			const url = 'http://localhost:' + port;
+			console.log(colors.green(`✨ Server is running ${colors.bold(url)}`));
+			opn(url);
 		});
 	} else {
-		//相对路径
+		const writeMacFile = (macPath:string)=>{
+			fs.writeFile(
+				macPath,
+				JSON.stringify(dependenciesTree, null, 2),
+				(err) => {
+					if (err) {
+					}
+					console.log(
+						colors.bold.green(' 🎉 🎉 🎉 成功写入json文件 🎉 🎉 🎉')
+					);
+					console.log(
+						colors.green(`🎊 保存路径为: ${colors.bold(macPath)}`)
+					);
+				}
+			);
+		}
+		//操作系统是linux和Mac的情况下
+		if (os.type() == 'Darwin' || os.type() == 'Linux') {
+			const macReg=new RegExp('/^/([a-zA-Z0-9_-]+/?)+$/')
+			// relativeReg.test(jsonFilePath);
+			let macPath: string = '';
+			console.log(macPath);
+			
+			if (
+				data.json.split('/')[0] == '.' ||
+				data.json.split('/')[0] == '..'
+			) {
+				//说明是相对路径
+				if (data.json.includes('.json')) {
+					macPath = path.join(process.cwd(), data.json);
+				} else {
+					macPath = path.join(
+						process.cwd(),
+						data.json,
+						'dependenciesTree.json'
+					);
+				}
+				let json = macPath.split('/');
+				json.pop();
+				let macDir = json.join('/');
+				if (!fs.existsSync(macDir)) {
+					fs.mkdir(macDir, () => {});
+				}
+				writeMacFile(macPath)
+			} else if(data.json.substring(0,1)=='/'){
+				//说明是绝对路径
+				if (data.json.includes('.json')) {
+					macPath = path.join(data.json);
+				} else {
+					macPath = path.join(data.json, 'dependenciesTree.json');
+				}
+				let json = macPath.split('/');
+				json.pop();
+				let macDir = json.join('/');
+				if (!fs.existsSync(macDir)) {
+					fs.mkdir(macDir, () => {});
+				}
+				writeMacFile(macPath)
+			}else{
+				console.log(
+					colors.bold.red('❎ Wrong file path,your file path should be like:')
+				);
+				console.log(
+					colors.yellow(
+						'✨ Absolute path:' +
+							colors.bold('/root/dependenciesTree.json')
+					)
+				);
+				console.log(
+					colors.yellow(
+						'✨ Relative path:' + colors.bold('./dist/dependenciesTree.json ') + 'or' + colors.bold(' ../dist/dependenciesTree.json')
+					)
+				);
+				console.log(
+					colors.yellow(
+						colors.bold(
+							'Of course, you can also choose not to specify a file name, and we will assign a default file name called "dependenciesTree.json".'
+						)
+					)
+				);
+			}
+			
+		} else {
+			//操作系统是win的情况下
+			//相对路径
 		const relativeReg = new RegExp('^[^/]+(?:/[^/]+)*.json$');
 		//绝对路径
 		// 如果是绝对路径就不在拼接地址
@@ -145,13 +225,6 @@ const analyzeDependencies = (data: {
 				);
 			}
 		}
-		//判断地址是否按照格式来写
-		if (os.type() == 'Darwin' || os.type() == 'Linux') {
-			//操作系统是linux和Mac的情况下
-			relativeReg.test(jsonFilePath)
-			if(!fs.existsSync(jsonFilePath)){}
-		} else {
-			//操作系统是win的情况下
 			if (relativeReg.test(jsonFilePath)) {
 				console.log();
 				let pathDir: fs.PathLike;

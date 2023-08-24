@@ -17,10 +17,9 @@ function getDepTree(
     }
 
     // 将当前包名加入堆栈，以检查循环依赖
-    stack.push(packageName);
-
+    stack.push(packageName); 
+    let pkgJson= require(pkgPath);
     // 加载当前包的 package.json 文件
-    const pkgJson = require(pkgPath);
     const deps = pkgJson.dependencies || {};
 
     // 创建包信息对象
@@ -37,7 +36,6 @@ function getDepTree(
             // 获取直接依赖包的路径和 package.json 路径
             const depPkgDir = path.join(rootPath, 'node_modules', depName);
             const depPkgJsonPath = path.join(depPkgDir, 'package.json');
-
             // 递归获取直接依赖包的依赖关系树
             const depPkgTree: dependenciesType = getDepTree(
                 depName,
