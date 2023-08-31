@@ -9,6 +9,7 @@ import { getFullDepTree } from './readDep/printDependencyGraph';
 import fs from 'fs';
 import os from 'os';
 const program = new Command();
+import portfinder from "portfinder";
 //定义生成的循环树
 let dependenciesTree: dependenciesType;
 program
@@ -90,6 +91,7 @@ const analyzeDependencies = (data: {
 }) => {
 	console.log(colors.bold.blue('⭐️⭐️ 即将进行npm性能分析... ⭐️⭐️'));
 	console.log(colors.bold.blue('......'));
+	console.log(colors.bold.blue('......'));
 	// 限制层数的话就传入限制的层数
 	if (data.depth) {
 		dependenciesTree = getFullDepTree(process.cwd(), data.depth);
@@ -109,10 +111,14 @@ const analyzeDependencies = (data: {
 			res.json(data); // 返回 JSON 数据
 		});
 
-		app.listen(port || 3000, () => {
-			const url = 'http://localhost:' + port;
-			console.log(colors.green(`✨ Server is running ${colors.bold(url)}`));
-			opn(url);
+		const host = "localhost"
+		portfinder.setBasePort(3000);
+		portfinder.getPort((_: Error, port: number) => {
+			app.listen(port, () => {
+				const url = 'http://'+`${host}`+':' + port;
+				console.log(colors.green(`✨ Server is running ${colors.bold(url)}`));
+				opn(url);
+			});
 		});
 	} else {
 		const writeMacFile = (macPath:string)=>{

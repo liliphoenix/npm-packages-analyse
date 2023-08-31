@@ -1,12 +1,12 @@
-import { describe, it, expect } from 'vitest'
+const { describe, it, expect } =require( 'vitest')
 
-import { mount } from '@vue/test-utils'
+const { mount } =require('@vue/test-utils') 
 // @ts-ignore
-import HelloWorld from '../HelloWorld.vue'
+import App from "@/App.vue"
 
 describe('HelloWorld', () => {
   it('renders properly', () => {
-    const wrapper = mount(HelloWorld, { props: { msg: 'Hello Vitest' } })
+    const wrapper = mount( App, { props: { msg: 'Hello Vitest' } })
     expect(wrapper.text()).toContain('Hello Vitest')
   })
 })
